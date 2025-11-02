@@ -1,0 +1,61 @@
+name: Build Plugin
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+            cmake_generator: "Visual Studio 17 2022"
+
+          - name: macOS
+            os: macos-latest
+            cmake_generator: "Xcode"
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Setup CMake
+      uses: jwlawson/actions-setup-cmake@v1.14
+      with:
+        cmake-version: '3.24.x'
+
+    - name: Configure
+      run: cmake -B build -G "${{ matrix.cmake_generator }}"
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Upload VST3 (Windows)
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v3
+      with:
+        name: MakeItHappenOTT-VST3-Windows
+        path: build/MakeItHappenOTT_artefacts/VST3/MakeItHappenOTT.vst3/
+
+    - name: Upload AU (macOS)
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v3
+      with:
+        name: MakeItHappenOTT-AU-macOS
+        path: build/MakeItHappenOTT_artefacts/AU/MakeItHappenOTT.component/
+
+    - name: Upload VST3 (macOS)
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v3
+      with:
+        name: MakeItHappenOTT-VST3-macOS
+        path: build/MakeItHappenOTT_artefacts/VST3/MakeItHappenOTT.vst3/
