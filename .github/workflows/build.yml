@@ -41,21 +41,21 @@ jobs:
 
     - name: Upload VST3 (Windows)
       if: matrix.os == 'windows-latest'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MakeItHappenOTT-VST3-Windows
         path: build/MakeItHappenOTT_artefacts/VST3/MakeItHappenOTT.vst3/
 
     - name: Upload AU (macOS)
       if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MakeItHappenOTT-AU-macOS
         path: build/MakeItHappenOTT_artefacts/AU/MakeItHappenOTT.component/
 
     - name: Upload VST3 (macOS)
       if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MakeItHappenOTT-VST3-macOS
         path: build/MakeItHappenOTT_artefacts/VST3/MakeItHappenOTT.vst3/
