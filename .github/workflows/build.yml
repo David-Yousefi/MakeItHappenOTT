@@ -39,11 +39,21 @@ jobs:
     - name: Build
       run: cmake --build build --config Release
 
-    - name: List build artifacts (debug)
+    - name: List build artifacts (debug) - Windows
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "=== Listing build directory ==="
+        Get-ChildItem -Path build -Recurse | Select-Object FullName
+        Write-Host "=== Checking for plugin files ==="
+        Get-ChildItem -Path build -Recurse -Include *.vst3 -ErrorAction SilentlyContinue | Select-Object FullName
+
+    - name: List build artifacts (debug) - macOS
+      if: matrix.os == 'macos-latest'
       run: |
         echo "=== Listing build directory ==="
-        ls -la build/
-        echo "=== Checking for artefacts ==="
+        find build/ -type f
+        echo "=== Checking for plugin files ==="
         find build/ -name "*.vst3" -o -name "*.component" || echo "No plugins found"
 
     - name: Upload VST3 (Windows)
